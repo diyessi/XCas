@@ -1,0 +1,150 @@
+% !TEX TS-program = pdflatex
+% !TEX encoding = UTF-8 Unicode
+
+\documentclass[12pt]{article} % use larger type; default would be 10pt
+
+\usepackage[utf8]{inputenc} % set input encoding (not needed with XeLaTeX)
+
+\usepackage{geometry} % to change the page dimensions
+\geometry{letterpaper} % or letterpaper (US) or a5paper or....
+\usepackage{graphicx} % support the \includegraphics command and options
+
+%%% PACKAGES
+\usepackage{booktabs} % for much better looking tables
+\usepackage{array} % for better arrays (eg matrices) in maths
+\usepackage{paralist} % very flexible & customisable lists (eg. enumerate/itemize, etc.)
+\usepackage{verbatim} % adds environment for commenting out blocks of text & for better verbatim
+\usepackage{subfig} % make it possible to include more than one captioned figure/table in a single float
+
+%%% HEADERS & FOOTERS
+\usepackage{fancyhdr} % This should be set AFTER setting up the page geometry
+\pagestyle{fancy} % options: empty , plain , fancy
+\renewcommand{\headrulewidth}{0pt} % customise the layout...
+\lhead{}\chead{}\rhead{}
+\lfoot{}\cfoot{\thepage}\rfoot{}
+
+%%% SECTION TITLE APPEARANCE
+\usepackage{sectsty}
+\allsectionsfont{\sffamily\mdseries\upshape} % (See the fntguide.pdf for font help)
+% (This matches ConTeXt defaults)
+
+%%% ToC (table of contents) APPEARANCE
+\usepackage[nottoc,notlof,notlot]{tocbibind} % Put the bibliography in the ToC
+\usepackage[titles,subfigure]{tocloft} % Alter the style of the Table of Contents
+\renewcommand{\cftsecfont}{\rmfamily\mdseries\upshape}
+\renewcommand{\cftsecpagefont}{\rmfamily\mdseries\upshape} % No bold!
+
+%%% END Article customizations
+
+%%% The "real" document content comes below...
+
+\title{XCas}
+\author{Scott Cyphers}
+
+\begin{document}
+\maketitle
+\abstract
+XCas is a simple design pattern that augments the Apache UIMA CAS to provide modular type-safe access to external resources.  Every potential user
+of an XCas defines the interface that it requires.  A pipeline defines one or more XCas resources that provide access to implementations of the required interfaces.  At appropriate points during processing, a CAS is bound to such an implementation.  Annotators include the resource specification and
+obtain the XCas implementation from their CAS during processing.
+
+\section*{Annotator Definition}
+Annotators define a public static \texttt{XCas} interface with all their required methods.  The class \texttt{XCasAnnotator\_ImplBase<XCas>}
+provides a convenient mechanism for declaring the external resource.  For example, Figure~\ref{FIG:SimpleAnnotator} defines an annotator
+that require one XCas method.
+\begin{figure}
+\begin{verbatim}
+public class SignalWordsAnnotator
+extends XCasAnnotator_ImplBase<SignalWordsAnnotator.XCas> 
+{
+   public static interface XCas
+   {
+      SignalWords getSignalWords();
+   }
+	
+   public static <T extends XCas> 
+   AnalysisEngineDescription getDescription(XCasResource<T> resource)
+   throws ResourceInitializationException 
+   {
+      return getDescription(SignalWordsAnnotator.class, resource);
+   }
+
+   @Override
+   public void process(JCas jCas, XCas xCas) 
+   throws AnalysisEngineProcessException 
+   {
+        xCas.getSignalWords().compute(jCas);
+   }
+}
+\end{verbatim}
+\caption{Simple annotator definition}
+\label{FIG:SimpleAnnotator}
+\end{figure}
+The \texttt{getDescription} method returns a description for this annotator, given a resource that implements the interface.  The
+\texttt{XCasAnnotator\_ImplBase} implements the \texttt{process(JCas jCas)} method, obtains the associated XCas, and passes
+both to \texttt{process}.
+\section*{Resource Definition}
+Resource definition is also simple.  The resource defines an public static \texttt{XCas} interface that extends a set of \texttt{XCas} interfaces
+which includes the \texttt{XCas} interfaces for the annotators that will use it.
+\begin{figure}
+\begin{verbatim}
+public class QuestionASResource 
+extends XCasResource_Impl<QuestionASResource.XCas> 
+{
+   public static interface XCas extends
+   ChunkVectorAnnotator.XCas,
+   ClosestChunkAnnotator.QuestionXCas,
+   ClosestSentenceAnnotator.QuestionXCas,
+   CommentInitializer.QuestionXCas,
+   Configuration.QuestionXCas,
+   Doc2VecAnnotator.XCas,
+   Doc2VecFeatureVectorAnnotator.QuestionXCas,
+   DocumentInitializer.XCas,
+   DocumentVectorAnnotator.XCas,
+   QuestionCommentCASMultiplier.XCas,
+   SentenceVectorAnnotator.XCas,
+   TokenVectorAnnotator.XCas,
+   TreeStringAnnotator.XCas,
+   WordWeightAnnotator.XCas
+   {}
+
+   public final static
+   QuestionASResource resource = new QuestionASResource();
+	
+   @Override
+   public Object getResource() 
+   {
+      return resource;
+   }
+}
+\end{verbatim}
+\caption{\texttt{XCas} Resource definition}
+\label{FIG:ResourceDefinition}
+\end{figure}
+The resource is a singleton that associates a \texttt{JCas} with an implementation of its \texttt{XCas} interface.  The class
+\texttt{XCasResource\_Impl<XCas>} extends  \texttt{ExternalResourceLocator} to provide methods for managing the associations, as well as a \texttt{getResourceDescription} method
+which creates a \texttt{ExternalResourceDescription} for this resource.
+\section*{\texttt{XCas} Implementation}
+Any class that implements the the resource's \texttt{XCas} interface and be bound to a \texttt{JCas} by the resource.  For example, Figure~\ref{FIG:XCasImplementation} shows an implementation of \texttt{QuationASResource.XCas}.
+\begin{figure}
+\begin{verbatim}
+public class QuestionAS
+implements QuestionASResource.XCas
+{
+   @Override
+   SignalWords getSignalWords()
+   {
+      ...
+   }
+
+   ...
+}
+\end{verbatim}
+\caption{Implementation of \texttt{XCas}}
+\label{FIG:XCasImplementation}
+\end{figure}
+\section*{Setting up a Pipeline}
+\section*{Binding an \texttt{XCas} to a \texttt{JCas}}
+\section*{XCas Strategies}
+\section*{Implementation}
+\end{document}

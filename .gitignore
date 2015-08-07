@@ -4,3 +4,8 @@
 *.ear
 *~
 .DS_Store
+/doc/*.aux
+/doc/*.log
+doc/*.gz
+
+
