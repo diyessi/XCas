@@ -1,11 +1,12 @@
-/target
 *.class
-*.war
 *.ear
+*.war
 *~
 .DS_Store
+.classpath
+.project
+.settings
 /doc/*.aux
 /doc/*.log
+/target
 doc/*.gz
-
-
