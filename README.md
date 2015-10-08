@@ -41,8 +41,9 @@ The `getDescription` method returns an analysis engine description for this anno
 that implements the `XCas` interface. The `XCasAnnotator_ImplBase` implements the `process(JCas jCas)`
 method, obtains the `XCas` associated with the `XCas`, and passes both to process.
 # Resource Definition
-A resource must pair an implementations of one or more `XCas` interfaces with each `JCas`.  The easiest way
-to do this is to define an annotator that creates the the `XCas` implementation and put it in the pipeline ahead of the `XCas` annotators.
+A resource must pair an implementations of one or more `XCas` interfaces with each `JCas`.  One way to
+do this is to use an `XCasCreateAnnotator` with an init arg of the resource, and put the annotator
+ in the pipeline ahead of the `XCas` annotators.  Readers can also perform the association.
 ```
 public class QuestionASResource 
 implements
@@ -67,16 +68,13 @@ WordWeightAnnotator.XCas
       public Object getResource() {
          return resource;
       };
-   }
-   public static final Resource resource = new Resource();
-
-   // Associates an XCas with the JCas
-   static public class Annotator extends JCasAnnotator_ImplBase {
+      
       @Override
-      public void process(JCas jCas) throws AnalysisEngineProcessException {
-         resource.setXCas(jCas, new QuestionASResource());
+      public FeatureCollector createXCas(){
+         return new FeatureCollector();
       }
    }
+   public static final Resource resource = new Resource();
 
    // Implement the XCas interfaces
    @Override
