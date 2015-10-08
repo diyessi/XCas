@@ -77,11 +77,23 @@ abstract public class XCasResource_Impl<T> extends Resource_ImplBase implements 
 	public T removeXCas(JCas jcas){
 		return removeXCas(jcas.getCas());
 	}
+	
+	@Override
+	public T createXCas(){
+		throw new UnsupportedOperationException();
+	}
+	
+	@Override
+	public T setNewXCas(CAS cas){
+		return setXCas(cas, createXCas());
+	}
+
+	public T setNewXCas(JCas jCas){
+		return setXCas(jCas, createXCas());
+	}
 
 	@Override
 	public ExternalResourceDescription getResourceDescription(){
 		return ExternalResourceFactory.createExternalResourceDescription(this.getClass());
 	}
-
-
 }

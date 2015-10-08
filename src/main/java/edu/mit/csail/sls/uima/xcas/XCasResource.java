@@ -83,4 +83,24 @@ public interface XCasResource<T> extends ExternalResourceLocator, ExternalResour
 	 * @return the value
 	 */
 	T removeXCas(JCas jcas);
+
+	/**
+	 * Create a new XCas instance
+	 * @return the new XCas
+	 */
+	T createXCas();
+	
+	/**
+	 * Create a new XCas and associate it with the cas
+	 * @param cas
+	 * @return the new XCas
+	 */
+	T setNewXCas(CAS cas);
+	
+	/**
+	 * Create a new XCas and associate it with the jCas
+	 * @param jCas
+	 * @return
+	 */
+	T setNewXCas(JCas jCas);
 }
