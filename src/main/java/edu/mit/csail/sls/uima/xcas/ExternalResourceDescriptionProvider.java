@@ -30,7 +30,7 @@ package edu.mit.csail.sls.uima.xcas;
 import org.apache.uima.resource.ExternalResourceDescription;
 
 /**
- * A resource that implements this interface can provide a resource description for itself
+ * An object that can provide a ExternalResourceDescription for itself
  */
 public interface ExternalResourceDescriptionProvider {
 	/**

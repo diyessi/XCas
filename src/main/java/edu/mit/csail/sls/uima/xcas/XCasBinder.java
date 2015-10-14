@@ -28,7 +28,6 @@
 package edu.mit.csail.sls.uima.xcas;
 
 import org.apache.uima.cas.CAS;
-import org.apache.uima.fit.descriptor.ExternalResourceLocator;
 import org.apache.uima.jcas.JCas;
 
 /**
@@ -36,7 +35,7 @@ import org.apache.uima.jcas.JCas;
  *
  * @param <T> The type of the value
  */
-public interface XCasResource<T> extends ExternalResourceLocator, ExternalResourceDescriptionProvider {
+public interface XCasBinder<T> {
 	public static final String PARAM_XCAS_RESOURCE = "xCasResource";
 	
 	/**
@@ -83,24 +82,4 @@ public interface XCasResource<T> extends ExternalResourceLocator, ExternalResour
 	 * @return the value
 	 */
 	T removeXCas(JCas jcas);
-
-	/**
-	 * Create a new XCas instance
-	 * @return the new XCas
-	 */
-	T createXCas();
-	
-	/**
-	 * Create a new XCas and associate it with the cas
-	 * @param cas
-	 * @return the new XCas
-	 */
-	T setNewXCas(CAS cas);
-	
-	/**
-	 * Create a new XCas and associate it with the jCas
-	 * @param jCas
-	 * @return
-	 */
-	T setNewXCas(JCas jCas);
 }

@@ -43,9 +43,19 @@ import org.apache.uima.resource.ExternalResourceDescription;
  *
  * @param <T> The type of the value
  */
-abstract public class XCasResource_Impl<T> extends Resource_ImplBase implements XCasResource<T>, ExternalResourceLocator {
+abstract public class XCasBinderResource_Impl<T> extends Resource_ImplBase implements XCasFactoryBinderResource<T>, XCasFactoryBinder<T>, XCasFactory<T>, ExternalResourceLocator {
 	
 	protected WeakHashMap<CAS, T> index = new WeakHashMap<>();
+	
+	@Override
+	public XCasBinder<T> getXCasBinder(){
+		return this;
+	}
+	
+	@Override
+	public XCasFactory<T> getXCasFactory(){
+		return this;
+	}
 		
 	@Override
 	public synchronized T setXCas(CAS cas, T value){
