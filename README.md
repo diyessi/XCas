@@ -41,40 +41,22 @@ The `getDescription` method returns an analysis engine description for this anno
 that implements the `XCas` interface. The `XCasAnnotator_ImplBase` implements the `process(JCas jCas)`
 method, obtains the `XCas` associated with the `XCas`, and passes both to process.
 # Resource Definition
-A resource must pair an implementations of one or more `XCas` interfaces with each `JCas`.  One way to
+A resource must pair an implementations of one or more `XCas` interfaces with each `CAS`.  One way to
 do this is to use an `XCasCreateAnnotator` with an init arg of the resource, and put the annotator
  in the pipeline ahead of the `XCas` annotators.  Readers can also perform the association.
 ```
-public class QuestionASResource 
+public class QuestionAS 
 implements
 ChunkVectorAnnotator.XCas,
-ClosestChunkAnnotator.QuestionXCas,
-ClosestSentenceAnnotator.QuestionXCas,
-CommentInitializer.QuestionXCas,
-Configuration.QuestionXCas,
-Doc2VecAnnotator.XCas,
-Doc2VecFeatureVectorAnnotator.QuestionXCas,
-DocumentInitializer.XCas,
-DocumentVectorAnnotator.XCas,
-QuestionCommentCASMultiplier.XCas,
-SentenceVectorAnnotator.XCas,
-TokenVectorAnnotator.XCas,
-TreeStringAnnotator.XCas,
-WordWeightAnnotator.XCas
+SignalWordsAnnotayor.XCas
 {
-   // Define a resource
-   public static class Resource extends XCasResource_Impl<FeatureCollector> {
-      @Override
-      public Object getResource() {
-         return resource;
-      };
-      
+   public static final XCasResource<QuestionAS> resource = new XCasResource(){
       @Override
       public FeatureCollector createXCas(){
-         return new FeatureCollector();
+         return new QuestionAS();
       }
-   }
-   public static final Resource resource = new Resource();
+      
+   };
 
    // Implement the XCas interfaces
    @Override
@@ -84,10 +66,18 @@ WordWeightAnnotator.XCas
    }
 }
 ```
-The resource is a singleton that associates a `JCas` with a `QuestionASResource`.  The class
-`XCasResource_Impl<XCas>` extends  `ExternalResourceLocator` to provide methods for managing the associations,
-as well as a `getResourceDescription` method which creates a `ExternalResourceDescription` for this resource.
-# Setting up a Pipeline
-# Binding an `XCas` to a `JCas`
-# `XCas` Strategies
-# Implementation
+The resource is an object that associates `CAS` objects with `QuestionAS` objects.  The class
+`XCasResource<XCas>` provides methods for managing the associations,
+as well as a `getResourceDescription` method which creates an `ExternalResourceDescription` for this resource.
+# Binding an `XCas` to a `CAS`
+The `XCasCreateAnnotator` will create a new `XCas` and associate it with the `CAS`.
+```
+   XCasCreateAnnotator.getDescription(QuestionAS.resource);
+```
+will return a resource description that can be used in a pipeline to associate a `QuestionAS` with
+the `CAS`.  Each resource maintains its own set of associations, so it is possible to associate more than
+one kind of `xCas` with a `CAS`.
+```
+    QuestionAS.resource(jCas)
+```
+will return the `QuestionAS` associated with `jCas`.
