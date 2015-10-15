@@ -38,20 +38,20 @@ import org.apache.uima.resource.ResourceInitializationException;
 
 abstract public class XCasCollectionReader_ImplBase<XCas> extends JCasCollectionReader_ImplBase {
 	
-	@ExternalResource(key = XCasBinder.PARAM_XCAS_RESOURCE)
-	protected XCasBinder<XCas> xCasResource;
+	@ExternalResource(key = XCasResource.PARAM_XCAS_RESOURCE)
+	protected XCasResource<XCas> xCasResource;
 	
-	public static <XCas> AnalysisEngineDescription getDescription(Class<? extends AnalysisComponent> cls, ExternalResourceDescriptionProvider resource) 
+	public static <XCas> AnalysisEngineDescription getDescription(Class<? extends AnalysisComponent> cls, XCasResource<XCas> resource) 
 			throws ResourceInitializationException {
 		return AnalysisEngineFactory.createEngineDescription(cls,
-				XCasBinder.PARAM_XCAS_RESOURCE, resource.getResourceDescription());
+				XCasResource.PARAM_XCAS_RESOURCE, resource.getResourceDescription());
 	}
 
 	abstract public void getNext(JCas jcas, XCas xCas) throws org.apache.uima.collection.CollectionException;
 	
 	@Override
 	public void getNext(JCas jCas) throws CollectionException {
-		getNext(jCas, xCasResource.getXCas(jCas));
+		getNext(jCas, xCasResource.setNewXCas(jCas));
 	}
 
 }

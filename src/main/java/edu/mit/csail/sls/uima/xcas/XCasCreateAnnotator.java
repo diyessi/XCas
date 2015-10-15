@@ -13,13 +13,13 @@ import org.apache.uima.resource.ResourceInitializationException;
  */
 public class XCasCreateAnnotator extends JCasAnnotator_ImplBase {
 
-	@ExternalResource(key = XCasBinder.PARAM_XCAS_RESOURCE)
-	protected XCasFactoryBinder<Object> xCasResource;
+	@ExternalResource(key = XCasResource.PARAM_XCAS_RESOURCE)
+	protected XCasResource<Object> xCasResource;
 
-	public static <T> AnalysisEngineDescription getDescription(XCasFactoryBinderResource<T> resource)
+	public static <XCas> AnalysisEngineDescription getDescription(XCasResource<XCas> resource)
 			throws ResourceInitializationException {
 		return AnalysisEngineFactory.createEngineDescription(XCasCreateAnnotator.class,
-				XCasBinder.PARAM_XCAS_RESOURCE, resource.getResourceDescription());
+				XCasResource.PARAM_XCAS_RESOURCE, resource.getResourceDescription());
 	}
 
 	@Override

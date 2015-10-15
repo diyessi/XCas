@@ -38,13 +38,13 @@ import org.apache.uima.resource.ResourceInitializationException;
 
 abstract public class XCasAnnotator_ImplBase<XCas> extends JCasAnnotator_ImplBase {
 	
-	@ExternalResource(key = XCasBinder.PARAM_XCAS_RESOURCE)
-	protected XCasBinder<XCas> xCasResource;
+	@ExternalResource(key = XCasResource.PARAM_XCAS_RESOURCE)
+	protected XCasResource<XCas> xCasResource;
 	
-	public static <XCas> AnalysisEngineDescription getDescription(Class<? extends AnalysisComponent> cls, XCasBinderResource<XCas> resource) 
+	public static <XCas> AnalysisEngineDescription getDescription(Class<? extends AnalysisComponent> cls, XCasResource<XCas> resource) 
 			throws ResourceInitializationException {
 		return AnalysisEngineFactory.createEngineDescription(cls,
-				XCasBinder.PARAM_XCAS_RESOURCE, resource.getResourceDescription());
+				XCasResource.PARAM_XCAS_RESOURCE, resource.getResourceDescription());
 	}
 
 	abstract public void process(JCas jcas, XCas xCas) throws AnalysisEngineProcessException;
