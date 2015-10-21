@@ -27,12 +27,12 @@
 
 package edu.mit.csail.sls.uima.xcas;
 
-import org.apache.uima.analysis_component.AnalysisComponent;
-import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionException;
+import org.apache.uima.collection.CollectionReader;
+import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.component.JCasCollectionReader_ImplBase;
 import org.apache.uima.fit.descriptor.ExternalResource;
-import org.apache.uima.fit.factory.AnalysisEngineFactory;
+import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 
@@ -41,10 +41,10 @@ abstract public class XCasCollectionReader_ImplBase<XCas> extends JCasCollection
 	@ExternalResource(key = XCasResource.PARAM_XCAS_RESOURCE)
 	protected XCasResource<XCas> xCasResource;
 	
-	public static <XCas> AnalysisEngineDescription getDescription(Class<? extends AnalysisComponent> cls, XCasResource<XCas> resource) 
+	public static <XCas> CollectionReaderDescription createReaderDescription(Class<? extends CollectionReader> cls, XCasResource<XCas> resource, Object ... configurationData) 
 			throws ResourceInitializationException {
-		return AnalysisEngineFactory.createEngineDescription(cls,
-				XCasResource.PARAM_XCAS_RESOURCE, resource.getResourceDescription());
+		return CollectionReaderFactory.createReaderDescription(cls,
+				ConfigurationData.prepend(configurationData, XCasResource.PARAM_XCAS_RESOURCE, resource.getResourceDescription()));
 	}
 
 	abstract public void getNext(JCas jcas, XCas xCas) throws org.apache.uima.collection.CollectionException;

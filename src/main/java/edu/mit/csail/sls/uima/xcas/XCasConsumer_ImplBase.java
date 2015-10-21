@@ -41,10 +41,10 @@ abstract public class XCasConsumer_ImplBase<XCas> extends JCasConsumer_ImplBase 
 	@ExternalResource(key = XCasResource.PARAM_XCAS_RESOURCE)
 	protected XCasResource<XCas> xCasResource;
 	
-	public static <XCas> AnalysisEngineDescription getDescription(Class<? extends AnalysisComponent> cls, XCasResource<XCas> resource) 
+	public static <XCas> AnalysisEngineDescription createEngineDescription(Class<? extends AnalysisComponent> cls, XCasResource<XCas> resource, Object ... configurationData) 
 			throws ResourceInitializationException {
-		return AnalysisEngineFactory.createEngineDescription(cls,
-				XCasResource.PARAM_XCAS_RESOURCE, resource.getResourceDescription());
+		return AnalysisEngineFactory.createEngineDescription(cls, 
+				ConfigurationData.prepend(configurationData, XCasResource.PARAM_XCAS_RESOURCE, resource.getResourceDescription()));
 	}
 
 	abstract public void process(JCas jcas, XCas xCas) throws AnalysisEngineProcessException;
