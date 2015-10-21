@@ -23,10 +23,10 @@ extends XCasAnnotator_ImplBase<SignalWordsAnnotator.XCas>
    }
 	
    public static <T extends XCas> 
-   AnalysisEngineDescription getDescription(XCasResource<T> resource)
+   AnalysisEngineDescription createEngineDescription(XCasResource<T> resource)
    throws ResourceInitializationException 
    {
-      return getDescription(SignalWordsAnnotator.class, resource);
+      return createEngineDescription(SignalWordsAnnotator.class, resource);
    }
 
    @Override
@@ -37,7 +37,7 @@ extends XCasAnnotator_ImplBase<SignalWordsAnnotator.XCas>
    }
 }
 ```
-The `getDescription` method returns an analysis engine description for this annotator, given a resource
+The `createEngineDescription` method returns an analysis engine description for this annotator, given a resource
 that implements the `XCas` interface. The `XCasAnnotator_ImplBase` implements the `process(JCas jCas)`
 method, obtains the `XCas` associated with the `XCas`, and passes both to process.
 # Resource Definition
@@ -72,7 +72,7 @@ as well as a `getResourceDescription` method which creates an `ExternalResourceD
 # Binding an `XCas` to a `CAS`
 The `XCasCreateAnnotator` will create a new `XCas` and associate it with the `CAS`.
 ```
-   XCasCreateAnnotator.getDescription(QuestionAS.resource);
+   XCasCreateAnnotator.createEngineDescription(QuestionAS.resource);
 ```
 will return a resource description that can be used in a pipeline to associate a `QuestionAS` with
 the `CAS`.  Each resource maintains its own set of associations, so it is possible to associate more than
