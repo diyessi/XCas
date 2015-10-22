@@ -66,7 +66,7 @@ abstract public class XCasResource<XCas> {
 	 * 
 	 * @return the new XCas
 	 */
-	protected abstract XCas createXCas();
+	public abstract XCas createXCas();
 
 	/**
 	 * Associate a value with a CAS

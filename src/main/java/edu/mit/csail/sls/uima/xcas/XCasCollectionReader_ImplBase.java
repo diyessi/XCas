@@ -27,6 +27,9 @@
 
 package edu.mit.csail.sls.uima.xcas;
 
+import java.io.IOException;
+
+import org.apache.uima.UimaContext;
 import org.apache.uima.collection.CollectionException;
 import org.apache.uima.collection.CollectionReader;
 import org.apache.uima.collection.CollectionReaderDescription;
@@ -41,17 +44,44 @@ abstract public class XCasCollectionReader_ImplBase<XCas> extends JCasCollection
 	@ExternalResource(key = XCasResource.PARAM_XCAS_RESOURCE)
 	protected XCasResource<XCas> xCasResource;
 	
+	protected XCas nextXCas;
+	
 	public static <XCas> CollectionReaderDescription createReaderDescription(Class<? extends CollectionReader> cls, XCasResource<XCas> resource, Object ... configurationData) 
 			throws ResourceInitializationException {
 		return CollectionReaderFactory.createReaderDescription(cls,
 				ConfigurationData.prepend(configurationData, XCasResource.PARAM_XCAS_RESOURCE, resource.getResourceDescription()));
 	}
+	
+	@Override
+	public void initialize(UimaContext context) throws ResourceInitializationException {
+		super.initialize(context);
+		nextXCas = createXCas();
+		initialize(context, nextXCas);
+	}
+	
+	public void initialize(UimaContext context, XCas xCas) throws ResourceInitializationException{
+	}
+	
+	protected XCas createXCas(){
+		return xCasResource.createXCas();
+	}
 
+	public boolean hasNext() throws CollectionException, IOException{
+		nextXCas = createXCas();
+		if (!hasNext(nextXCas)){
+			nextXCas = null;
+			return false;
+		}
+		return true;
+	}
+	
+	abstract public boolean hasNext(XCas xCas) throws IOException, CollectionException;
 	abstract public void getNext(JCas jcas, XCas xCas) throws org.apache.uima.collection.CollectionException;
 	
 	@Override
 	public void getNext(JCas jCas) throws CollectionException {
-		getNext(jCas, xCasResource.setNewXCas(jCas));
+		getNext(jCas, xCasResource.setXCas(jCas, nextXCas));
+		nextXCas = null;
 	}
 
 }
