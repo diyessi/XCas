@@ -36,16 +36,33 @@ import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 
-abstract public class XCasMultiplier_ImplBase<XCas> extends JCasMultiplier_ImplBase {
+abstract public class XCasMultiplier_ImplBase<XCas, NextXCas> extends JCasMultiplier_ImplBase {
 	
 	@ExternalResource(key = XCasResource.PARAM_XCAS_RESOURCE)
 	protected XCasResource<XCas> xCasResource;
 	
-	public static <XCas> AnalysisEngineDescription createEngineDescription(Class<? extends AnalysisComponent> cls, XCasResource<XCas> resource, Object ... configurationData) 
+	@ExternalResource(key = XCasResource.PARAM_XCAS_RESOURCE_NEXT)
+	protected XCasResource<NextXCas> xCasResourceNext;
+	
+	public static <XCas, NextXCas> AnalysisEngineDescription createEngineDescription(Class<? extends AnalysisComponent> cls,
+			XCasResource<XCas> resource, XCasResource<NextXCas> nextResource, Object ... configurationData) 
 			throws ResourceInitializationException {
 		return AnalysisEngineFactory.createEngineDescription(cls,
-				ConfigurationData.prepend(configurationData, XCasResource.PARAM_XCAS_RESOURCE, resource.getResourceDescription()));
+				ConfigurationData.prepend(configurationData, 
+						XCasResource.PARAM_XCAS_RESOURCE, resource.getResourceDescription(),
+						XCasResource.PARAM_XCAS_RESOURCE_NEXT, nextResource.getResourceDescription()
+						));
 	}
+	
+	@Override
+	public JCas next() throws AnalysisEngineProcessException {
+		NextXCas nextXCas = xCasResourceNext.createXCas();
+		JCas jCas = next(nextXCas);
+		xCasResourceNext.setXCas(jCas, nextXCas);
+		return jCas;
+	}
+	
+	abstract public JCas next(NextXCas nextXCas) throws AnalysisEngineProcessException;
 
 	abstract public void process(JCas jcas, XCas xCas) throws AnalysisEngineProcessException;
 	

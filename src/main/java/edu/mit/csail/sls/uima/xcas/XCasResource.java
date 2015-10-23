@@ -40,6 +40,7 @@ import org.apache.uima.resource.ExternalResourceDescription;
 
 abstract public class XCasResource<XCas> {
 	public static final String PARAM_XCAS_RESOURCE = "xCasResource";
+	public static final String PARAM_XCAS_RESOURCE_NEXT = "xCasResourceNext";
 	
 	// Holds each CAS->xCas resource
 	static final WeakHashMap<String, XCasResource<?>> resources = new WeakHashMap<>();
