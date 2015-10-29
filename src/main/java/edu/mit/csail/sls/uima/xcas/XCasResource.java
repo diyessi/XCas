@@ -27,39 +27,27 @@
 
 package edu.mit.csail.sls.uima.xcas;
 
-import java.util.UUID;
 import java.util.WeakHashMap;
 
 import org.apache.uima.cas.CAS;
-import org.apache.uima.fit.component.Resource_ImplBase;
-import org.apache.uima.fit.descriptor.ConfigurationParameter;
-import org.apache.uima.fit.descriptor.ExternalResourceLocator;
-import org.apache.uima.fit.factory.ExternalResourceFactory;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ExternalResourceDescription;
 
-abstract public class XCasResource<XCas> {
+abstract public class XCasResource<XCas> implements ExternalResourceDescriptionProvider<XCasResource<XCas>> {
 	public static final String PARAM_XCAS_RESOURCE = "xCasResource";
 	public static final String PARAM_XCAS_RESOURCE_NEXT = "xCasResourceNext";
 	
-	// Holds each CAS->xCas resource
-	static final WeakHashMap<String, XCasResource<?>> resources = new WeakHashMap<>();
 
-	final String uuid;
+	final XResource<XCasResource<XCas>> xResource;
 	final protected WeakHashMap<CAS, XCas> index;;
 
 	protected XCasResource() {
 		this.index = new WeakHashMap<>();
-		synchronized (resources) {
-			uuid = UUID.randomUUID().toString();
-			resources.put(uuid, this);
-		}
+		xResource = new XResource<>(this);
 	}
 
 	protected void finalize() {
-		synchronized (resources) {
-			resources.remove(uuid);
-		}
+		xResource.release();
 	}
 
 	/**
@@ -144,26 +132,12 @@ abstract public class XCasResource<XCas> {
 		return setXCas(jCas, createXCas());
 	}
 
-	final static String PARAM_UUID = "uuid";
-
-	static public class XCasBinderResourceDescription extends Resource_ImplBase implements ExternalResourceLocator {
-		@ConfigurationParameter(name = PARAM_UUID)
-		String uuid;
-
-		@Override
-		public Object getResource() {
-			synchronized (resources) {
-				return resources.get(uuid);
-			}
-		}
-	}
-
 	/**
 	 * 
 	 * @return A resource description
 	 */
+	@Override
 	public ExternalResourceDescription getResourceDescription() {
-		return ExternalResourceFactory.createExternalResourceDescription(XCasBinderResourceDescription.class,
-				PARAM_UUID, uuid);
+		return xResource.getResourceDescription();
 	}
 }

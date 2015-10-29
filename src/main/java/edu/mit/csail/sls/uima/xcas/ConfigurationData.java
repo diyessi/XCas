@@ -10,7 +10,7 @@ class ConfigurationData {
 	 * @param moreArgs
 	 * @return moreArgs prepended to originalArgs
 	 */
-	static Object[] prepend(Object[] originalArgs, Object ... moreArgs){
+	public static Object[] prepend(Object[] originalArgs, Object ... moreArgs){
 		Object[] newArgs = new Object[originalArgs.length + moreArgs.length];
 		int pos = 0;
 		for(Object o : moreArgs){
@@ -28,7 +28,7 @@ class ConfigurationData {
 	 * @param moreArgs
 	 * @return originalArgs extended by moreArgs
 	 */
-	static Object[] extend(Object[] originalArgs, Object ... moreArgs){
+	public static Object[] extend(Object[] originalArgs, Object ... moreArgs){
 		Object[] newArgs = new Object[originalArgs.length + moreArgs.length];
 		int pos = 0;
 		for(Object o : originalArgs){

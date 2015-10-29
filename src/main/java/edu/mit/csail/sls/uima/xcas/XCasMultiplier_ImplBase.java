@@ -45,7 +45,9 @@ abstract public class XCasMultiplier_ImplBase<XCas, NextXCas> extends JCasMultip
 	protected XCasResource<NextXCas> xCasResourceNext;
 	
 	public static <XCas, NextXCas> AnalysisEngineDescription createEngineDescription(Class<? extends AnalysisComponent> cls,
-			XCasResource<XCas> resource, XCasResource<NextXCas> nextResource, Object ... configurationData) 
+			ExternalResourceDescriptionProvider<XCasResource<XCas>> resource, 
+			ExternalResourceDescriptionProvider<XCasResource<NextXCas>> nextResource, 
+			Object ... configurationData) 
 			throws ResourceInitializationException {
 		return AnalysisEngineFactory.createEngineDescription(cls,
 				ConfigurationData.prepend(configurationData, 

@@ -42,23 +42,10 @@ abstract public class XCasCollectionReader_ImplBase<XCas> extends JCasCollection
 	@ExternalResource(key = XCasResource.PARAM_XCAS_RESOURCE)
 	protected XCasResource<XCas> xCasResource;
 	
-	public static <XCas> CollectionReaderDescription createReaderDescription(Class<? extends CollectionReader> cls, XCasResource<XCas> resource, Object ... configurationData) 
+	public static <XCas> CollectionReaderDescription createReaderDescription(Class<? extends CollectionReader> cls, ExternalResourceDescriptionProvider<XCasResource<XCas>> resource, Object ... configurationData) 
 			throws ResourceInitializationException {
 		return CollectionReaderFactory.createReaderDescription(cls,
 				ConfigurationData.prepend(configurationData, XCasResource.PARAM_XCAS_RESOURCE, resource.getResourceDescription()));
-	}
-	
-	@Override
-	public void initialize(UimaContext context) throws ResourceInitializationException {
-		super.initialize(context);
-		initialize(context, createXCas());
-	}
-	
-	public void initialize(UimaContext context, XCas xCas) throws ResourceInitializationException{
-	}
-	
-	protected XCas createXCas(){
-		return xCasResource.createXCas();
 	}
 
 	abstract public void getNext(JCas jcas, XCas xCas) throws org.apache.uima.collection.CollectionException;

@@ -41,7 +41,7 @@ abstract public class XCasAnnotator_ImplBase<XCas> extends JCasAnnotator_ImplBas
 	@ExternalResource(key = XCasResource.PARAM_XCAS_RESOURCE)
 	protected XCasResource<XCas> xCasResource;
 	
-	public static <XCas> AnalysisEngineDescription createEngineDescription(Class<? extends AnalysisComponent> cls, XCasResource<XCas> resource, Object ... configurationData) 
+	public static <XCas> AnalysisEngineDescription createEngineDescription(Class<? extends AnalysisComponent> cls, ExternalResourceDescriptionProvider<XCasResource<XCas>> resource, Object ... configurationData) 
 			throws ResourceInitializationException {
 		return AnalysisEngineFactory.createEngineDescription(cls,
 				ConfigurationData.prepend(configurationData, XCasResource.PARAM_XCAS_RESOURCE, resource.getResourceDescription()));

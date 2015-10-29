@@ -14,7 +14,7 @@ public class XCasDocumentInitializer extends XCasAnnotator_ImplBase<XCasDocument
 		String getDocumentText();
 	}
 	
-	public static <T extends XCas> AnalysisEngineDescription createEngineDescription(XCasResource<T> resource) throws ResourceInitializationException {
+	public static <T extends XCas> AnalysisEngineDescription createEngineDescription(ExternalResourceDescriptionProvider<XCasResource<T>> resource) throws ResourceInitializationException {
 		return createEngineDescription(XCasDocumentInitializer.class, resource);
 	}
 

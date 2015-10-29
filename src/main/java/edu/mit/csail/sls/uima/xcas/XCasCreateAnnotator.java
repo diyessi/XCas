@@ -43,7 +43,7 @@ public class XCasCreateAnnotator extends JCasAnnotator_ImplBase {
 	@ExternalResource(key = XCasResource.PARAM_XCAS_RESOURCE)
 	protected XCasResource<Object> xCasResource;
 
-	public static <XCas> AnalysisEngineDescription getDescription(XCasResource<XCas> resource)
+	public static <XCas> AnalysisEngineDescription getDescription(ExternalResourceDescriptionProvider<XCasResource<XCas>> resource)
 			throws ResourceInitializationException {
 		return AnalysisEngineFactory.createEngineDescription(XCasCreateAnnotator.class,
 				XCasResource.PARAM_XCAS_RESOURCE, resource.getResourceDescription());
