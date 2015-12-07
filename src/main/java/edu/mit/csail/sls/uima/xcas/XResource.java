@@ -79,6 +79,22 @@ public class XResource<T> implements ExternalResourceDescriptionProvider<T> {
 	}
 	
 	/**
+	 * Make resource available as an external resource.
+	 */
+	public XResource(){
+		this(null);
+	}
+
+	protected void setResource(T resource){
+		resources.put(uuid, resource);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public T getResource(){
+		return (T)resources.get(uuid);
+	}
+	
+	/**
 	 * Release storage associated with this resource
 	 */
 	public void release(){
